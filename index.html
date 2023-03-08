@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>RECAS home page </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+           box-sizing: border-box;
+        }
+
+        /* Style the body */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+        }
+
+        /* Header/logo Title */
+        .header {
+             padding: 10px;
+             text-align: center;
+             background: #1abc9c;
+             color: white;
+        }
+
+        /* Increase the font size of the heading */
+        .header h1 {
+             font-size: 40px;
+        }
+
+        /* Style the top navigation bar */
+        .navbar {
+             overflow: hidden;
+             background-color: #333;
+        }
+
+        /* Style the navigation bar links */
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        /* Right-aligned link */
+        .navbar a.right {
+            float: right;
+        }
+
+        /* Change color on hover */
+        .navbar a:hover {
+             background-color: #ddd;
+             color: black;
+        }
+
+       /* Column container */
+       .row {
+            display: -ms-flexbox; /* IE10 */
+            display: flex;
+            -ms-flex-wrap: wrap; /* IE10 */
+            flex-wrap: wrap;
+       }
+
+       /* Create two unequal columns that sits next to each other */
+       /* Sidebar/left column */
+       .side {
+            -ms-flex: 50%; /* IE10 */
+            flex: 50%;
+            background-color: #f1f1f1;
+            padding: 20px;
+       }
+
+       /* Main column */
+       .main {
+            -ms-flex: 50%; /* IE10 */
+           flex: 50%;
+           background-color: white;
+           padding: 20px;
+       }
+
+       /* Fake image, just for this example */
+       .ReqStruct {
+           background-color: #aaa;
+           width: 100%;
+           padding: 20px;
+       }
+
+       /* Footer */
+           .footer {
+           padding: 20px;
+           text-align: center;
+           background: #ddd;
+       }
+
+       /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+       @media screen and (max-width: 700px) {
+           .row {
+              flex-direction: column;
+           }
+       }
+
+       /* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+       @media screen and (max-width: 400px) {
+           .navbar a {
+               float: none;
+               width: 100%;
+           }
+       }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1> RECAS : 요구사항 적합성 검사 시스템</h1>
+</div>
+
+<div class="navbar">
+  <a href="./recas/file/recas_manual.pptx">RECAS 매뉴얼</a>
+  <a href="./recas/file/test">적합성 온라인 테스트</a>
+  <a href="./recas/file/tcgen">테스트 케이스 생성 온라인 테스트</a>
+  <a href="./recas/file/errCode">오류코드 검색</a>
+  <a href="./recas/file/Dims">용어 검색</a>
+  <a href="#" class="right">RECAS 정보</a>
+</div>
+
+<div class="row">
+  <div class="side">
+    <h2>RECAS 사용 방법 1</h2>
+
+    <p>RESTful API를 이용하여 요구사항의 적합성을 검사합니다.</p>
+    <h2>RECAS 사용 방법 2</h2>
+    <p>브라우저에서 요구사항의 적합성을 검사하거나  </p>
+    <p> 요구사항 기반 테스트 케이스를 생성을 테스트할 수 있습니다. </p>
+    <h2>요구사항 구조의 예시</h2>
+    <div class="ReqStruct" style="height:300px;">문장구조 Image</div>
+  </div>
+  <div class="main">
+    <h2>RECAS 뉴스</h2>
+    <p>RECAS 시스템은 철도연구원과 델타인덱스사에 의하여 구축되었습니다.</p>
+    <h5>Version 1.0.: 2021년 10월 31일 발표 예정</h5>
+    <div class="ReqStruct" style="height:300px;">찰도연구원 사진</div>
+    <p>시진에 대한 설명 </p>
+    <br>
+  </div>
+</div>
+
+</body>
+</html>

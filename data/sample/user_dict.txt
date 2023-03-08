@@ -1,0 +1,301 @@
+소등	NNG
+ATO장치	NNP
+B모드	NNP
+CAN통신	NNP
+m	SW
+OFF	NNG
+ON	NNG
+PSD 가동 도어	NNP
+PSD 전체 가동 도어	NNP
+PSD 제어시스템	NNP
+PSD가동도어	NNP
+PSD닫힘지령	NNP
+PSD열림 지령	NNP
+PSD열림지령	NNP
+PSD전체가동도어	NNP
+PSD제어시스템	NNP
+R_CTR_01	NNP
+RF Modem	NNP
+RFModel#2	NNP
+RFModem	NNP
+RFModem #1	NNP
+RFModem #2	NNP
+RFModem#1	NNP
+RFModem#2	NNP
+가동	NNG
+가동 도어	NNP
+가동 도어 상부표시등	NNP
+가동 도어 상부표시등	NNP
+가동 도어상부표시등	NNP
+가동 도어상부표시등(적색)	NNP
+가동도어	NNP
+가동도어 상부표시등	NNP
+가동도어담힘	NNP
+가동도어상부표시등	NNP
+가동도어상부표시등(적색)	NNP
+가동도어열림 지령	NNP
+가동도어열림지령	NNP
+가동도어재개폐	NNP
+감지	NNG
+강사	NNP
+강의	NNP
+개별 제어반	NNP
+개별닫힘확인 신호	NNP
+개별닫힘확인신호	NNP
+개별열림확인	NNP
+개별제어반	NNP
+경고 신호	NNP
+경고신호	NNP
+경보	NNP
+경보음	NNP
+고객상담실 종합제어반	NNP
+고객상담실종합제어반	NNP
+고도	NNP
+고양이	NNP
+기관사안내장치	NNP
+기관사안내장치 (HMI)	NNP
+기관사조작반	NNP
+기준값	NNP
+기차	NNP
+길이	NNP
+녹색	NNP
+녹색개별닫힘확인 신호	NNP
+녹색개별닫힘확인신호	NNP
+다음	NNG
+닫	VA
+닫히	VV
+닫힘	NNP
+닫힘 신호	NNP
+닫힘 지령	NNP
+닫힘감지 센서 ON	NNP
+닫힘완료 지령	NNP
+닫힘지령	NNP
+닫힘확인 센서	NNP
+닫힘확인 신호	NNP
+닫힘확인 신호 OFF	NNP
+닫힘확인 지령	NNP
+닫힘확인센서	NNP
+닫힘확인신호OFF	NNP
+닫힘확인지령	NNP
+대기 상태	NNP
+도어개폐표시등	NNP
+도어상부표시등	NNP
+동작	NNG
+동작음	NNP
+동작음(음성)	NNP
+멈추	VV
+메모리	NNP
+모니터	NNP
+모드	NNP
+모드선택	NNP
+모든	MM
+무겁	VA
+무선주파수	NNP
+무시	NNG
+문열림정보	NNP
+물체	NNP
+미정차	NNG
+바이패스	NNP
+바이패스 모드	NNP
+바이패스 스위치	NNP
+바이패스 신호	NNP
+바이패스 해제	NNP
+바이패스모드	NNP
+바이패스스위치	NNP
+바이패스신호	NNP
+발생	NNG
+변경	NNG
+변경	NNG
+보내	VV
+비 활성화	NNG
+비교	NNG
+비상문	NNP
+비활성화	NNG
+사용자	NNP
+상부표시등	NNP
+상태정보	NNP
+생선	NNP
+생성	NNG
+선로측	NNP
+설정값	NNP
+설정재개폐수	NNP
+세	VA
+손잡이	NNP
+송신	NNG
+송신 신호	NNP
+송신신호	NNP
+수동	NNG
+수신	NNG
+수정	NNG
+수정요청	NNP
+수행	NNG
+승강장	NNP
+승강장 미정차	NNP
+승강장안전문	NNP
+승강장안전문시스템	NNP
+승강장안전문연동제어부	NNP
+승강장정위치	NNP
+승강장조작반	NNP
+시도	NNG
+시스템A	NNP
+시스템B	NNP
+시작	NNG
+실선	NNP
+양호구간	NNP
+연동시스템	NNP
+연동제어부	NNP
+열	VV
+열리	VV
+열림	NNP
+열림 지령	NNP
+열림감지 센서	NNP
+열림지령	NNP
+열림확인 센서	NNP
+열림확인 신호	NNP
+열림확인 신호 OFF	NNP
+열림확인 지령	NNP
+열림확인센서	NNP
+열림확인센서제어부	NNP
+열림확인신호	NNP
+열림확인신호OFF	NNP
+열림확인지령	NNP
+열차	NNP
+열차정위치정차정보	NNP
+열차정차위치정보	NNP
+열차출발	NNP
+열차출발정보	NNP
+열차출입문닫힘정보	NNP
+열차출입문열림닫힘 신호	NNP
+열차출입문열림닫힘신호	NNP
+열차출입문열림정보	NNP
+열차출입문정보	NNP
+온패스	NNP
+완전열림	NNP
+완전열림 지령	NNP
+완전히	MAG
+요소C	NNP
+요청정보	NNP
+운용자	NNP
+운용정보	NNP
+울리	VV
+위성망	NNP
+위치정보	NNP
+응용프로그램	NNP
+의미	NNG
+이	VCP
+입력	NNG
+자동모드	NNP
+자동복귀바이패스 시간	NNP
+자동복귀바이패스시간	NNP
+작동	NNG
+잠금감지 센서 ON	NNP
+잠금장치	NNP
+장애	NNP
+장애 상태	NNP
+장애상태	NNP
+장치	NNP
+장치류	NNP
+재개폐횟수	NNP
+저장	NNG
+적색	NNP
+적색개별닫힘확인신호	NNP
+적색개별열림확인 신호	NNP
+적색개별열림확인신호	NNP
+전송	NNG
+전체 열림 표시등	NNP
+전체닫힘표시등	NNP
+전체닫힘확인 신호	NNP
+전체닫힘확인신호	NNP
+전체열림표시등	NNP
+전체열림확인 신호	NNP
+전체열림확인신호	NNP
+전환	NNG
+점등	NNG
+점멸	NNG
+접속	NNG
+접속여부	NNP
+정보	NNP
+정보	NNP
+정위치	NNP
+정차	NNG
+제어	NNG
+제어기	NNP
+제어반	NNP
+제어부	NNP
+조건검사	NNP
+조작반	NNP
+종료	NNG
+종합제어반	NNP
+주제어반	NNP
+중앙제어부	NNP
+중지	NNG
+지	NNP
+지상RF장치	NNP
+지속	NNG
+진입	NNG
+진입 신호	NNP
+진출	NNG
+짧	VA
+차상RF장치	NNP
+차상RF장치	NNP
+처리	NNG
+체계	NNP
+초과	NNG
+출력	NNG
+출발	NNG
+출입문	NNP
+출입문감지센서	NNP
+취급	NNG
+크기	NNP
+통신	NNP
+통신수단	NNP
+파라미터	NNP
+표시	NNG
+표적	NNP
+해제	NNG
+해지장치	NNP
+확인	NNG
+활성화	NNG
+구동부	NNP
+제어부	NNP
+전원부	NNP
+확인신호	NNP
+지령	NNP
+자동복귀	NNP
+제동기	NNP
+바이패스오드	NNP
+출입문정보	NNP
+지상장치	NNP
+바이패스시간	NNP
+자동복귀시간	NNP
+열림표시등	NNP
+제어반	NNP
+열차출입문정보	NNP
+제동반	NNP
+강아지	NNP
+켜	VA
+틀리	VV
+다르	VA
+아니	VCN
+크	VA
+길	VA
+작	VA
+적	VA
+같	VA
+초과	NNP
+미만	NNP
+이상	NNP
+이하	NNP
+승강조작반	NNP
+기관사	NNP
+출입정보	NNP
+열차출입문	NNP
+지상센서	NNP
+RF_modem#1	NNP
+이상정보	NNP
+온도센서	NNP
+70	NNP
+습도센서	NNP
+ON	NNG
+도어열림등	NNP
+도어열림등	NNP

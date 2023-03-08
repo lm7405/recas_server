@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Document</title>
+    <style>
+       * {
+           box-sizing: border-box;
+       }
+       /* Style the body */
+       body {
+           font-family: Arial, Helvetica, sans-serif;
+           margin: 0;
+       }
+       /* Header/logo Title */
+       .header {
+           padding: 10px;
+           text-align: center;
+           background: #1abc9c;
+           color: white;
+       }
+       .flex-container {
+           display: flex;
+           margin: 2px;
+           padding: 2px;
+           font-size: 18px;
+           background-color: DodgerBlue;
+       }
+       div.info {
+           width: 40%;
+           float: left;
+       }
+       div.image {
+           width: 55%;
+           margin-left:5px;
+           float: right;
+       }
+    </style>
+</head>
+<body>
+    <h1 class="header" style="text-align: center">요구사항 적합성 검사</h1>
+    <div class="flex-container">
+         <table border="1" style="background-color: white; table-layout:fixed; width: 130px; margin: auto; text-align: center;">
+             <tr>
+                 <td style="width:100% text-align:center"> <b>요구사항</b>  </td>
+             </tr>
+         </table>
+         <table style="background-color: white; width: 100%; height:30px; margin: auto;">
+             <tr>
+                 <td style="width:100% height:100%">
+                     <input type="text" id="input-requirement" name="input-requirement"
+                            style="width:98%; height:98%; font-size:18px;">
+                 </td>
+             </tr>
+         </table>
+    </div>
+    <div></div>
+    <div class="flex-container">
+         <table border="1" style="background-color: white; table-layout:fixed; width: 130px; margin: auto; text-align: center;">
+             <tr>
+                 <td style="width:100%">
+                     <button id="requirement-req" onclick="checkReq();" style="background-color: magenta; font-size:17px;">
+                         <b>검사요청</b>
+                     </button>
+                 </td>
+             </tr>
+         </table>
+         <table style="background-color: white; width: 100%; height:30px; margin: auto;">
+             <tr>
+                 <td style="width:100% height:100%">
+                      <div id="requirement-processing" style="margin: 2 auto;">
+                          검사요청 버튼을 누르면, Recas 서버에게 요구사항 적합성 검사를 요청합니다
+                      </div>
+                 </td>
+             </tr>
+         </table>
+    </div>
+    <div id="Table-check-info" class="info">
+        <br>
+        <b>요구사항을 입력한 후, 검사요청 버튼을 누르면 요구사항의 적합성을 검사합니다.
+           검사결과, 적합하다고 판단되면 요구사항의 핵심정보가 출력됩니다.</b>
+    </div>
+    <div id="struct-image" class="image">
+        <br>
+        <div style="text-align:left"> <b>요구사항의 구조 다이어그램을 출력하는 영역입니다</b></div>
+        <div style="text-align:left"> <b>아래의 버튼은 검사 후에 활성화됩니다.</b></div>
+        <div style="text-align:left"> <b>활성화된 버튼을 클릭하면 다이어그램이 출력됩니다</b></div>
+        <div style="height:20px">
+             <button id="requirement-structure" onclick="drawReq();"
+                     style="width:400px;height:23px;font-size:16px;background:grey;"><b>구조표시</b></button>
+            <script>
+                document.getElementById('requirement-structure').disabled = true;
+            </script>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+        // 적합성 검사 버튼 callback 함수
+        const DEBUG = true;
+        function checkReq() {
+            if (document.getElementById("input-requirement").value.length <= 0) {
+                document.getElementById("requirement-processing").innerHTML = "입력된 요구사항이 없습니다";
+                return;
+            }
+            document.getElementById("input-requirement").style.color = "red";
+            document.getElementById("requirement-processing").innerHTML = "처리중";
+            document.getElementById("requirement-processing").style.color = "red";
+            postRequest();
+        }
+        // recas server에게 적합성 검사를 POST 요청하는 함수
+	    function postRequest() {
+	        var url = window.location.protocol + "//" + window.location.host + "/recas/check";
+		    var reqStr = document.getElementById("input-requirement").value;
+		    var req = buildCheckreq(reqStr);
+      	    var xhr = new XMLHttpRequest();
+		    xhr.open("POST", url, true);
+		    xhr.onreadystatechange = function() { // 상태가 변하면 호출
+			    if (xhr.readyState == 4) {        //1:loading, 2:loaded, 4:completed
+                    if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+                        document.getElementById("input-requirement").style.color = "black";
+                        document.getElementById("requirement-processing").innerHTML = "아래에서 검사결과를 확인하시기 바랍니다";
+                        document.getElementById("requirement-processing").style.color = "blue";
+		                var   data = xhr.responseText;
+		                DebugTrace("요청 결과(xhr.responseText) ", data);
+		                const reply = JSON.parse(data);
+		                //PrintKeyInfosDebug(reply);
+		                printResult(reply);
+                        makeActiveDrawReq(reply);
+				    }
+				    else {
+                        document.getElementById("requirement-processing").innerHTML =
+                                           "오류: " + xhr.status +
+                                           " (참고: 0:서버연결 오류, 403:접근금지, 404:not Found, 500:server 오류)";
+				   }
+			    }
+		    }
+		    xhr.setRequestHeader("Content-Type", "application/json");
+		    xhr.send(req);
+        }
+
+        function buildCheckreq(reqStr) {
+             var str = "";
+             str = " { ";
+             str +=    "\"method\": \"check\", ";
+             str +=    "\"user\": \"tester\", " ;
+             str +=    "\"param\": [{\"req_ID\":\"Test_ID\", \"req_str\":\"" + reqStr + "\"" + "}]";
+             str += "}";
+             return str;
+        }
+        function printResult(reply) {
+            var table = '<table border="1" style="table-layout:fixed; width:100%; align:left; border:1px solid gray;">';
+            // 각 row 내용 채우는 방법:  '<tr>' '<td>' column 1 내용 '</td>'  '<td>' column 2 내용 '</td>'. . . . '</tr>'
+            const reqIDs = Object.keys(reply);
+            for (let k =0; k < reqIDs.length; k++) {
+                var reqID = reqIDs[k];
+                table += '<tr>';
+                    table += '<td width="100">'+'요구사항 ID'+'</td">' + '<td  width="150">'+reqID+'</td>';
+                table += '</tr>';
+                table += '<tr>';
+                    if (reply[reqID]['status']==0) {
+                       table += '<td width="100"> </td>' + '<td  width="150">'+'적합성'+'</td>' + '<td>'+'적합'+'</td>';
+                    }
+                    else {
+                       table += '<td width="100"> </td>' + '<td width="150">'+'적합성'+'</td>' + '<td>'+'부적합'+'</td>';
+                    }
+                table += '</tr>';
+                table += '<tr>';
+                    table += '<td width="100"> </td>' + '<td  width="150">'+'부적합 코드'+'</td>' + '<td>'+reply[reqID]['errors']+'</td>';
+                table += '</tr>';
+                table += '<tr>';
+                    table += '<td width="100"> </td>' + '<td width="150">'+'문장 구조'+'</td>' + '<td>'+reply[reqID]['structImage']+'</td>';
+                table += '</tr>';
+                for (idx=0;idx<reply[reqID]['key_infos'].length;idx++){
+                     // reply[reqID]['key_infos'][idx]
+                     table += '<tr>';
+                     table += '<td width="100"> 단위문장</td>' + '<td width="150">' + '문장역할' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['TYPE'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + '단위문장ID' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['ID'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + 'QUA' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['QUA'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + 'SUB(주어)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['SUB'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + 'OBJ(목적어)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['OBJ'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + '부사어(ADV)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['ADV'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + '동사(VER)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['VER'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + '동작꾸밈(TRS)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['TRS'] + '</td>';
+                     table += '</tr>';
+                     table += '<tr>';
+                     table += '<td width="100"> </td>' + '<td width="150">' + '시간(TIM)' + '</td>' + '<td>' + reply[reqID]['key_infos'][idx]['TIM'] + '</td>';
+                     table += '</tr>';
+                 }
+
+            }
+            table += '</table>';
+            document.getElementById("Table-check-info").innerHTML =  table;
+        }
+        // 요구사항 구조를 화면에 출력
+        function makeActiveDrawReq(reply) {
+            const reqIDs = Object.keys(reply);
+            /* 현재 version에서는 첫 요구사항의 구조만을 출력한다 */
+            var reqID = reqIDs[0];
+            var url = reply[reqID]['structImage'];
+            document.getElementById('requirement-structure').disabled = false;
+            document.getElementById('requirement-structure').innerText = url;
+            document.getElementById('requirement-structure').style.background = "magenta";
+        }
+        function drawReq() {
+  	        var hosturl = window.location.protocol + "//" + window.location.host + "/recas/result/";
+	        var orgurl = document.getElementById('requirement-structure').innerText;
+	        var url = orgurl.replace(/\\/g,'/');
+	        url = hosturl + url;
+            // <div id="struct-image" class="image"> 에 이미지를 down 받은 이미지를 출력함
+            var str = "<p> <img src=\"" + url + "\" > </p>";
+            document.getElementById("struct-image").innerHTML = str;
+            DebugTrace("Draw Requested",url);
+        }
+        function DebugTrace(hd, message) {
+           if (DEBUG == true) {
+               alert(hd + " : " + message);
+           }
+        }
+        function PrintKeyInfosDebug(reply) {
+            const reqIDs = Object.keys(reply);
+            DebugTrace("검사한 요구사항 갯수",reqIDs.length);
+            if (DEBUG == true && reqIDs.length > 0){
+                 var reqID = reqIDs[0];
+                 DebugTrace("첫 요구사항","요구사항 ID:"+reqID+", 핵심정보 갯수:"+reply[reqID]['key_infos'].length);
+                 for (idx=0;idx<reply[reqID]['key_infos'].length;idx++){
+                     DebugTrace("핵심 정보 ", JSON.stringify(reply[reqID]['key_infos'][idx]));
+                 }
+		    }
+		}
+</script>
+

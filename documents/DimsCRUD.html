@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Document</title>
+    <style>
+       * {
+           box-sizing: border-box;
+       }
+       /* Style the body */
+       body {
+           font-family: Arial, Helvetica, sans-serif;
+           margin: 0;
+       }
+       /* Header/logo Title */
+       .header {
+           padding: 10px;
+           text-align: center;
+           background: #1abc9c;
+           color: white;
+       }
+       .flex-container {
+           display: flex;
+           margin: 2px;
+           padding: 2px;
+           font-size: 18px;
+           background-color: DodgerBlue;
+       }
+       div.info {
+           width: 40%;
+           float: left;
+       }
+       div.image {
+           width: 55%;
+           margin-left:5px;
+           float: right;
+       }
+    </style>
+</head>
+<body>
+    <h1 class="header" style="text-align: center">용어 검색 및 정의</h1>
+    <form name="dims_if" id="dims_if">
+        <table style="font-size:16px;border-spacing:1px;background-color:green;margin-left:35px;margin-right:35px">
+            <tr style="background-color:white">
+                <td width="15%" style="text-align:center"> 용 어</td>
+                <td width="85%">
+                    <input type="text" name="text" id="text" style="width:100%;font-size:16px" />
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center"> recas 품사 코드</td>
+                <td>
+                    <input type="text" name="recas_type" id="recas_type" style="width:100%;font-size:16px"/>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center"> recas VER TYPE </td>
+                <td>
+                    <input type="text" name="recas_ver_type" id="recas_ver_type" style="width:100%;font-size:16px"/>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center">형태소분석기</td>
+                <td>
+                    <input type="text" name="tokenizer" id="tokenizer" style="width:100%;font-size:16px"/>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center"> 형태소분석기 품사</td>
+                <td>
+                    <input type="text" name="tokenizer_type" id="tokenizer_type" style="width:100%;font-size:16px"/>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center"> 분 야</td>
+                <td>
+                    <input type="text" name="category" id="category" style="width:100%;font-size:16px"/>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center">설 명</td>
+                <td>
+                    <textarea cols="63" rows="10"  name="description" id="description" style="width:100%;font-size:16px"/>
+                    </textarea>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td width="200" style="text-align:center">사용 예</td>
+                <td>
+                    <textarea cols="63" rows="10" name="usage" id="usage" style="width:100%;font-size:16px"/>
+                    </textarea>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td style="text-align:center"> 검색결과 </td>
+                <td  name="q_result" id="q_result" style="width:100%;font-size:16px"/> 일치하는 용어 갯수 : 0 </td>
+            </tr>
+
+        </table>
+        <br>
+        <input type=button name="추가" value="새용어 추가" style="font-size:16px;margin-left:50px" onClick="addNewTerminoloy()">
+        <input type=button name="검색" value=" 용어 검색 " style="font-size:16px;margin-left:35px" onClick="queryTerminoloy()">
+        <input type=button name="다음" value=" 다음 결과 " style="font-size:16px;margin-left:50px" onClick="nextTerminoloy()">
+        <input type=button name="이전" value=" 이전 결과 " style="font-size:16px;margin-left:50px" onClick="prevTerminoloy()">
+        <input type=button name="삭제" value="  삭   제 " style="font-size:16px;margin-left:50px" onClick="deleteTerminoloy()">
+
+    </form>
+    <div style="font-size:16px;margin-left:35px">
+        query 작성 방법은 아래와 같습니다. <br>
+        1) [ "용어1", "용어2"] : "용어1"이나 "용어2"를 검색함. 용어의 앞-뒤에 " 필요함 <br>
+        2) %용어    : 용어가 포함된 용어 (입력 예) %열차<br>
+        3) ^용어    : 용어로 시작하는 용어 (입력 예) ^열차<br>
+        4) 용어     : 일치하는 용어 (입력 예) 열차 <br>
+        5) 검색문장  : 복잡한 조건 검색 (입력 예) {"$and":[{"text":"진입 신호"},{"category":"Train"}]}
+    </div>
+</body>
+</html>
+<script>
+    var query_Count = 0;
+    var query_cursor = 0;
+    var query_result;
+    function printResult() {  // json 형식 query_result를 해당 필드에 출력함
+         if (query_cursor < query_Count && query_cursor >= 0) {
+             alert(query_cursor + "출력 중" + query_result[query_cursor]["text"])
+             document.getElementById("text").value           = query_result[query_cursor]["text"];
+             document.getElementById("recas_type").value     = query_result[query_cursor]["recas_type"];
+             document.getElementById("recas_ver_type").value = query_result[query_cursor]["recas_ver_type"];
+             document.getElementById("tokenizer").value      = query_result[query_cursor]["tokenizer"];
+             document.getElementById("tokenizer_type").value = query_result[query_cursor]["tokenizer_type"];
+             document.getElementById("category").value       = query_result[query_cursor]["category"];
+             document.getElementById("description").value    = query_result[query_cursor]["description"];
+             document.getElementById("usage").value          = query_result[query_cursor]["usage"];
+         }
+    }
+    function queryTerminoloy() {
+        var theForm = document.dims_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/getTerm";
+        var req = document.getElementById("text").value;
+        if (req=="") {
+            alert("용어 검색 입력이 필요합니다.");
+            return;
+        }
+        var requestDic = {};
+        requestDic["method"] = "getTerm";
+        requestDic["param"] = req;
+        var requestBody = JSON.stringify(requestDic);
+        alert("query body\n"+requestBody);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+	                  var   data = xhr.responseText;
+	                  query_result = JSON.parse(data);
+  	                  alert("요청 결과 " + data);
+                      query_Count =  query_result.length;
+                      query_cursor = 0;
+                      document.getElementById("q_result").innerHTML = "일치하는 용어 갯수: "+query_Count;
+	                  printResult();
+		          }
+	              else {
+                     alert("검색중 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(requestBody);
+    }
+    function gather_DIMSTermqueryReq(theForm) {
+        var  text           = document.getElementById("text").value;
+        var  recas_type     = document.getElementById("recas_type").value;
+        var  recas_ver_type = document.getElementById("recas_ver_type").value;
+        var  tokenizer      = document.getElementById("tokenizer").value;
+        var  tokenizer_type = document.getElementById("tokenizer_type").value;
+        var  category       = document.getElementById("category").value;
+        var  description    = document.getElementById("description").value;
+        var  usage          = document.getElementById("usage").value;
+        var request = {};
+        if (text == "" || recas_type == "" || tokenizer == "" || tokenizer_type == "") {
+            return {};
+        }
+        request["text"]           = text;
+        request["recas_type"]     = recas_type;
+        request["recas_ver_type"] = recas_ver_type;
+        request["tokenizer"]      = tokenizer;
+        request["tokenizer_type"] = tokenizer_type;
+        request["category"]       = category;
+        request["description"]    = description;
+        request["usage"]          = usage;
+        var listReq = [];
+        listReq.push(request);
+        var actRequest={};
+        actRequest["method"]="addTerm";
+        actRequest["param"]=listReq;
+        return actRequest;
+    }
+    function addNewTerminoloy() {
+        var theForm = document.dims_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/addTerm";
+        var req = gather_DIMSTermqueryReq(theForm);
+        if (Object.keys(req).length == 0 ) {
+            alert("적어도 하나의 정의가 반드시 입력되어야 합니다.");
+            return;
+        }
+        request = JSON.stringify(req);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+               		 document.getElementById("q_result").innerHTML = xhr.responseText;
+                     alert("insert OK " + request);
+		          }
+	              else {
+                     alert("용어 insert 도중에 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(request);
+    }
+    function nextTerminoloy() {
+        var theForm = document.dims_if;
+        if (query_cursor < query_Count - 1 &&  query_Count > 0) {
+            query_cursor = query_cursor + 1;
+            printResult();
+        }
+        else {
+            alert("마지막 검색결과이거나 검색 결과가 없습니다.");
+        }
+    }
+    function prevTerminoloy() {
+        var theForm = document.dims_if;
+        if (query_cursor > 0 && query_Count > 0) {
+            query_cursor = query_cursor -1;
+            printResult();
+        }
+        else {
+            alert("첫번째 검색결과이거나 검색 결과가 없습니다.");
+        }
+    }
+    function gather_DIMSDeleteReq(theForm) {
+        var  text           = document.getElementById("text").value;
+        var  category       = document.getElementById("category").value;
+        var request = {};
+        if (text == "") {
+            return {};
+        }
+        request["text"]      = text;
+        request["category"]  = category;
+        request["method"]    = "delTerm";
+        return request;
+
+    }
+    function  deleteTerminoloy() {
+        var theForm = document.dims_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/deleteTerm";
+        var req = gather_DIMSDeleteReq(theForm);
+        if (Object.keys(req).length == 0 ) {
+            alert("삭제의 경우, text와 catefory가 반드시 입력되어야 합니다.");
+            return;
+        }
+        request = JSON.stringify(req);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+               		 document.getElementById("q_result").innerHTML = xhr.responseText;
+                     alert("delete OK " + request);
+		          }
+	              else {
+                     alert("용어 delete 도중에 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(request);
+    }
+</script>
+

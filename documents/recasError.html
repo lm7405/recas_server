@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Document</title>
+    <style>
+       * {
+           box-sizing: border-box;
+       }
+       /* Style the body */
+       body {
+           font-family: Arial, Helvetica, sans-serif;
+           margin: 0;
+       }
+       /* Header/logo Title */
+       .header {
+           padding: 10px;
+           text-align: center;
+           background: #1abc9c;
+           color: white;
+       }
+       .flex-container {
+           display: flex;
+           margin: 2px;
+           padding: 2px;
+           font-size: 18px;
+           background-color: DodgerBlue;
+       }
+       div.info {
+           width: 40%;
+           float: left;
+       }
+       div.image {
+           width: 55%;
+           margin-left:5px;
+           float: right;
+       }
+    </style>
+</head>
+<body>
+    <h1 class="header" style="text-align: center">적합성 검사 오류 코드 검색 및 정의</h1>
+    <form name="errCode_if" id="errCode_if">
+        <table style="font-size:16px;border-spacing:1px;background-color:green;margin-left:35px;margin-right:35px">
+            <tr style="background-color:white">
+                <td width="15%" style="text-align:center"> 오류코드 </td>
+                <td width="85%">
+                    <input type="text" name="errCode" id="errCode" style="width:100%;font-size:16px" />
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td  style="text-align:center">설 명</td>
+                <td>
+                    <textarea cols="63" rows="10"  name="description" id="description" style="width:100%;font-size:16px"/>
+                    </textarea>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td width="200" style="text-align:center">오류 수정 방법</td>
+                <td>
+                    <textarea cols="63" rows="10" name="correction" id="correction" style="width:100%;font-size:16px"/>
+                    </textarea>
+                </td>
+            </tr>
+            <tr style="background-color:white">
+                <td style="text-align:center"> 검색결과 </td>
+                <td  name="q_result" id="q_result" style="width:100%;font-size:16px"/> 일치하는 용어 갯수 : 0 </td>
+            </tr>
+
+        </table>
+        <br>
+        <input type=button name="추가" value="새코드 추가" style="font-size:16px;margin-left:50px" onClick="addNewerrCode()">
+        <input type=button name="검색" value=" 코드 검색 " style="font-size:16px;margin-left:35px" onClick="queryerrCode()">
+        <input type=button name="다음" value=" 다음 결과 " style="font-size:16px;margin-left:50px" onClick="nexterrCode()">
+        <input type=button name="이전" value=" 이전 결과 " style="font-size:16px;margin-left:50px" onClick="preverrCode()">
+        <input type=button name="삭제" value="  삭   제 " style="font-size:16px;margin-left:50px" onClick="deleteerrCode()">
+
+    </form>
+    <div style="font-size:16px;margin-left:35px">
+        query 작성 방법은 아래와 같습니다. <br>
+        1) [ "코드1", "코드2"] : "코드1"이나 "코드2"를 검색함. 코드의 앞-뒤에 " 필요함 <br>
+        2) %코드    : 코드가 포함된 오류코드 (입력 예) %10<br>
+        3) ^코드    : 코드로 시작하는 오류코드 (입력 예) ^10<br>
+        4) 코드     : 일치하는 코드 (입력 예) 1010 <br>
+        5) 검색문장  : 복잡한 조건 검색 (입력 예) {"$and":[{"errcode":"1010"},{"correction":"주어"}]}
+    </div>
+</body>
+</html>
+<script>
+    var query_Count = 0;
+    var query_cursor = 0;
+    var query_result;
+    function printResult() {  // json 형식 query_result를 해당 필드에 출력함
+         if (query_cursor < query_Count && query_cursor >= 0) {
+             alert(query_cursor + "출력 중" + query_result[query_cursor]["errCode"])
+             document.getElementById("errCode").value        = query_result[query_cursor]["errCode"];
+             document.getElementById("description").value    = query_result[query_cursor]["description"];
+             document.getElementById("correction").value     = query_result[query_cursor]["correction"];
+         }
+    }
+    function queryerrCode() {
+        var theForm = document.errCode_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/geterrCode";
+        var req = document.getElementById("errCode").value;
+        if (req=="") {
+            alert("오류코드 입력이 필요합니다.");
+            return;
+        }
+        var requestDic = {};
+        requestDic["method"] = "geterrCode";
+        requestDic["param"] = req;
+        var requestBody = JSON.stringify(requestDic);
+        alert("query body\n"+requestBody);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+	                  var   data = xhr.responseText;
+	                  query_result = JSON.parse(data);
+  	                  alert("요청 결과 " + data);
+                      query_Count =  query_result.length;
+                      query_cursor = 0;
+                      document.getElementById("q_result").innerHTML = "일치하는 오류코드 갯수: "+query_Count;
+	                  printResult();
+		          }
+	              else {
+                     alert("검색중 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(requestBody);
+    }
+    function gather_ErrCodeQueryReq(theForm) {
+        var  errCode        = document.getElementById("errCode").value;
+        var  description    = document.getElementById("description").value;
+        var  correction     = document.getElementById("correction").value;
+        var request = {};
+        if (errCode == "") {
+            return {};
+        }
+        request["errCode"]        = errCode;
+        request["description"]    = description;
+        request["correction"]     = correction;
+        var listReq = [];
+        listReq.push(request);
+        var actRequest={};
+        actRequest["method"]="adderrCode";
+        actRequest["param"]=listReq;
+        return actRequest;
+    }
+    function addNewerrCode() {
+        var theForm = document.errCode_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/adderrCode";
+        var req = gather_ErrCodeQueryReq(theForm);
+        if (Object.keys(req).length == 0 ) {
+            alert("오류 코드가 반드시 입력되어야 합니다.");
+            return;
+        }
+        request = JSON.stringify(req);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+               		 document.getElementById("q_result").innerHTML = xhr.responseText;
+                     alert("insert OK " + request);
+		          }
+	              else {
+                     alert("오류 코드 insert 도중에 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(request);
+    }
+    function nexterrCode() {
+        var theForm = document.errCode_if;
+        if (query_cursor < query_Count - 1 &&  query_Count > 0) {
+            query_cursor = query_cursor + 1;
+            printResult();
+        }
+        else {
+            alert("마지막 검색결과이거나 검색 결과가 없습니다.");
+        }
+    }
+    function preverrCode() {
+        var theForm = document.errCode_if;
+        if (query_cursor > 0 && query_Count > 0) {
+            query_cursor = query_cursor -1;
+            printResult();
+        }
+        else {
+            alert("첫번째 검색결과이거나 검색 결과가 없습니다.");
+        }
+    }
+    function gather_ErrCodeDeleteReq(theForm) {
+        var  errCode       = document.getElementById("errCode").value;
+        var  request = {};
+        if (errCode == "") {
+            return {};
+        }
+        request["errCode"]   = errCode;
+        request["method"]    = "deleteerrCode";
+        return request;
+
+    }
+    function  deleteerrCode() {
+        var theForm = document.errCode_if;
+        var url = window.location.protocol + "//" + window.location.host + "/recas/deleteerrCode";
+        var req = gather_ErrCodeDeleteReq(theForm);
+        if (Object.keys(req).length == 0 ) {
+            alert("적어도 하나의 정의가 반드시 입력되어야 합니다.");
+            return;
+        }
+        request = JSON.stringify(req);
+        alert("delete query body\n"+request);
+        query_Count =  0;
+        query_cursor = 0;
+  	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+	    xhr.onreadystatechange = function() {   // 상태가 변하면 호출
+	         if (xhr.readyState == 4) {         //1:loading, 2:loaded, 4:completed
+                  if (xhr.status == 200) {      // 200:OK, 403:접근금지, 404:not Found, 500:server 오류
+               		 document.getElementById("q_result").innerHTML = xhr.responseText;
+                     alert("delete OK " + request);
+		          }
+	              else {
+                     alert("용어 delete 도중에 오류가 발생하였습니다." + "오류코드:" + xhr.status);
+			      }
+		     }
+		}
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(request);
+    }
+</script>
+
