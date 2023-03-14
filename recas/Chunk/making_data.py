@@ -2,6 +2,19 @@ import tensorflow as tf
 
 
 def convert_model_input(data_list, komop_tokenizer):
+    """
+    Converts input data into a format suitable for a machine learning model.
+
+    Args:
+        data_list (list): A list of input data.
+        komop_tokenizer (object): A tokenizer object for Komoran POS tagging.
+
+    Returns:
+        tuple: A tuple containing three items:
+            - A list of lists of Komoran POS tags.
+            - A list of target POS tags.
+            - A list of lists of target POS tags.
+    """
     output = komop_tokenizer.get_training_data(data_list)
 
     # data 만들기
@@ -19,6 +32,21 @@ def convert_model_input(data_list, komop_tokenizer):
 
 
 def dictionary(komop_dic, chunk_dic):
+    """
+    Encodes dictionaries of POS tags into numeric form for use in a machine learning model.
+
+    Args:
+        komop_dic (str): A file path for the Komoran POS tag dictionary.
+        chunk_dic (str): A file path for the target POS tag dictionary.
+
+    Returns:
+        tuple: A tuple containing five items:
+            - A dictionary mapping Komoran POS tags to numeric values.
+            - A dictionary mapping numeric values to Komoran POS tags.
+            - A dictionary mapping target POS tags to numeric values.
+            - A dictionary mapping numeric values to target POS tags.
+            - The length of the Komoran POS tag dictionary.
+    """
     # data_dic 인코딩
     with open(komop_dic) as f:
         komop_lines = f.readlines()
@@ -43,6 +71,16 @@ def dictionary(komop_dic, chunk_dic):
 
 
 def komoran_encoding(komoran_list, komop_pos_dic):
+    """
+    Encodes Komoran POS tags into numeric form for use in a machine learning model.
+
+    Args:
+        komoran_list (list): A list of lists of Komoran POS tags.
+        komop_pos_dic (dict): A dictionary mapping Komoran POS tags to numeric values.
+
+    Returns:
+        list: A list of lists of numeric values representing the input Komoran POS tags.
+    """
     komoran_sentences = []
     for sentence in komoran_list:
         komoran_sentence = []
@@ -59,6 +97,16 @@ def komoran_encoding(komoran_list, komop_pos_dic):
 
 
 def chunk_encoding(rule_list_list, chunk_pos_dic):
+    """
+    Encodes chunk POS tags into numeric form for use in a machine learning model.
+
+    Args:
+    rule_list_list (list): A list of lists of chunk rule POS tags.
+    chunk_pos_dic (dict): A dictionary mapping Komoran POS tags to numeric values.
+
+    Returns:
+    list: A list of lists of numeric values representing the input Komoran POS tags.
+    """
     chunk_sentences = []
     for sentence in rule_list_list:
         chunk_sentence = []
@@ -75,6 +123,18 @@ def chunk_encoding(rule_list_list, chunk_pos_dic):
 
 
 def padding(komoran_sentences, chunk_sentences):
+    """
+    Pads Komoran and chunk sentences to a fixed length.
+
+    Args:
+    komoran_sentences (list): A list of lists of numeric values representing the input Komoran POS tags.
+    chunk_sentences (list): A list of lists of numeric values representing the input chunk POS tags.
+
+    Returns:
+    tuple: A tuple containing two items:
+    - A padded list of lists of numeric values representing the input Komoran POS tags.
+    - A padded list of lists of one-hot-encoded numeric values representing the input chunk POS tags.
+    """
     komoran_sentences = tf.keras.preprocessing.sequence.pad_sequences(komoran_sentences, maxlen=30, padding='post')
     rule_sentences = tf.keras.utils.to_categorical(chunk_sentences)
 

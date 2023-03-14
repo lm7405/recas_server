@@ -25,10 +25,11 @@ def error_check_rpt_sentences(rpt_item_subs: List[RPTItemSentence]):
     """
     Parse Tree를 검사하여 에러 목록을 반환하는 함수
     Args:
-        rpt_item_subs: Parse Tree로 구성된 문장
+        rpt_item_subs: List of RPTItemSentence objects, where each object represents an RPT sentence.
 
     Returns:
-        에러 목록
+        A list of tuples, where each tuple represents an error. The first element of the tuple is the error code and the
+        second element is the list of the sentence parts that caused the error.
     """
     data = {
         # 1520 4개 이상의 명사 나열

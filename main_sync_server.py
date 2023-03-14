@@ -1,13 +1,8 @@
-from fastapi import FastAPI, Response, Request
-from typing import List, Optional
-from pydantic import BaseModel
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-import requests
 import json
-import time
 from cache import DIMS
 from recas.FastAPI_Server.structure import *
-from threading import Thread
 
 debug = True
 

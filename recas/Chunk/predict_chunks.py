@@ -8,6 +8,18 @@ def predict_chunks(
         chunk_tag_path,
         model
 ):
+    """
+    Predicts the chunk tags of given sentences using a trained model and returns the predicted chunks.
+
+    Args:
+        sentences_komop (List[str]): A list of sentences to predict chunk tags for.
+        komop_tag_path (str): The path to the dictionary file containing the part-of-speech tags of the sentences.
+        chunk_tag_path (str): The path to the dictionary file containing the chunk tags of the sentences.
+        model (Any): The trained model to use for prediction.
+
+    Returns:
+        List[List[str]]: A list of lists of predicted chunk tags for each sentence.
+    """
     komop_pos_dic, num_to_word_dic, chunk_pos_dic, chunk_num_to_word_dic, word_index_len = \
         making_data.dictionary(komop_dic=komop_tag_path, chunk_dic=chunk_tag_path)
     test_sentences, sen = sentence_to_word_index(sentences_komop, komop_pos_dic)

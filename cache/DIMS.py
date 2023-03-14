@@ -43,12 +43,27 @@ def correct_encoding(dictionary):
 
 
 class DIMS:
+    """
+    DIMS class for initializing dims db.
+
+    Attributes:
+        dicdocKeyList (list): List of column names to be recorded in the dictionary.
+
+    """
     # 사전에 기록되는 column 이름
     dicdocKeyList = ["text", "recas_type", "category",
                      "description", "usage",
                      "tokenizer", "tokenizer_type"]
 
     def __init__(self, mongoHost="localhost", port=27017):
+        """
+        Initialize the DIMS class.
+
+        Args:
+            mongoHost (str): MongoDB host.
+            port (int): MongoDB port.
+
+        """
         self.df = None
         self.colLen = 0
         self.host = mongoHost
@@ -71,6 +86,16 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def loadDictionaryExcel(self, file=None):
+        """
+        Load the dictionary file as a DataFrame object.
+
+        Args:
+            file (str): File name of the dictionary file.
+
+        Returns:
+            None
+
+        """
         # 사전 파일을 pandas을 이용하여 load히여 DataFrame으로 만듦
         # self.df     : panda의 DataFrame object임
         # self.cNames : heading 들의 list(dims document의 key로 사용됨
@@ -92,6 +117,17 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def connect2Collection(self, dbName=None, collectionName=None):
+        """
+        Connect to the specified database and collection.
+
+        Args:
+            dbName (str): Name of the database.
+            collectionName (str): Name of the collection.
+
+        Returns:
+            pymongo.collection.Collection: Collection object of the specified database and collection.
+
+        """
         # self.db, seld.collection을 세팅하고 collection을 return함
         # collection은 일련의 query에서 사용할 수 있음
         if dbName == None or collectionName == None:
@@ -109,6 +145,16 @@ class DIMS:
 
     # -----------------------------------------------------------------------
     def insertDictionary(self,dbName=None,collectionName=None):
+        """
+        Insert the contents of self.df (words) into MongoDb.
+
+        Args:
+        - dbName: str, name of the database to insert to.
+        - collectionName: str, name of the collection to insert to.
+
+        Returns:
+        - int, number of documents inserted.
+        """
         # self.df 의 내용(단어들)을 MongoDb에 저장
         # db: <dbName>, collection:<collection>에 insert 함
         # DataFrame을 dictionary list로 변환한 후, insert 됨
@@ -128,6 +174,12 @@ class DIMS:
         return
 
     def __convertDataDrame2List(self):
+        """
+        Convert the dataframe to a list of dictionaries.
+
+        Returns:
+        - list, a list of dictionaries containing the data from the dataframe.
+        """
         docList = []
         count = len(self.df)
         for k in range(count):
@@ -138,6 +190,12 @@ class DIMS:
         return docList
 
     def print_DataFrame(self):
+        """
+        Print the contents of self.df in a list format.
+
+        Returns:
+        - None
+        """
         try:
             docList = self.__convertDataDrame2List()
             print("---- list from data frame ")
@@ -149,6 +207,15 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def addTermsListDictionary(self, itemList):
+        """
+        Insert a list of dictionaries into a collection in MongoDb.
+
+        Args:
+        - itemList: list, a list of dictionaries to be inserted.
+
+        Returns:
+        - tuple, containing the number of documents inserted and the result of the insertion.
+        """
         count = 0
         res = None
         try:
@@ -161,6 +228,15 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def makedoc2Dict(self, doc):
+        """
+        Convert a MongoDb document to a Python dictionary.
+
+        Args:
+        - doc: dict, a MongoDb document to be converted.
+
+        Returns:
+        - dict, the MongoDb document converted to a Python dictionary.
+        """
         item = {}
         keys = doc.keys()
         for key in keys:
@@ -170,6 +246,15 @@ class DIMS:
         return item
 
     def executeQuery(self, queryString=None):
+        """
+        Query a collection in MongoDb.
+
+        Args:
+        - queryString: str, a query in the form of a string.
+
+        Returns:
+        - tuple, containing the result of the query (a list of dictionaries) and the number of documents in the result.
+        """
         # query:
         #     relational operator("$or", "$and" 등),
         #     logical operator("$gt", "$ㅣs" 등) 과 {}. []로 표현된 query 문장임
@@ -203,6 +288,16 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def updateDocumenmts(self, queryString, setString):
+        """
+        Update documents in a MongoDb collection.
+
+        Args:
+        - queryString: str, a query in the form of a string.
+        - setString: str, a document containing the updates in the form of a string.
+
+        Returns:
+        - tuple, containing the number of documents matched and the number of documents modified.
+        """
         # query :  query 때와 같은 형식의 조건이며, 이 조건에 해당하는 document가 수정됨
         # setString : 수정할 값들을 정의하는 document
         # (setString 예) { "key1": value, "key2":value }처럼 key와 값들 dict 구조임
@@ -220,6 +315,15 @@ class DIMS:
 
     # ----------------------------------------------------------------------
     def deleteDocuments(self,queryString):
+        """
+        Delete documents from a MongoDb collection.
+
+        Args:
+        - queryString: str, a query in the form of a string.
+
+        Returns:
+        - int, the number of documents deleted.
+        """
         # query :  query 때와 같은 형식의 조건이며, 이 조건에 해당하는 document가 삭제됨
         col = self.collection
         query = json.loads(queryString)
@@ -228,7 +332,16 @@ class DIMS:
         return result.deleted_count
 
     # ----------------------------------------------------------------------
-    def print_queryNdocs(self,query):
+    def print_queryNdocs(self, query):
+        """
+        Print the results of a query in a list format.
+
+        Args:
+        - query: str, a query in the form of a string.
+
+        Returns:
+        - None
+        """
         # find(query)결과를 출력
         if self.dimsStatus == 0:
             return

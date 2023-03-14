@@ -4,6 +4,19 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 
 def training(word_index_len, komoran_sentences, rule_sentences, saved_model_file, epochs: int):
+    """
+    Trains a chunking model using the given data and saves the trained model to a file.
+
+    Args:
+        word_index_len (int): The length of the word index.
+        komoran_sentences (numpy.ndarray): An array of encoded sentences using the Komoran tokenizer.
+        rule_sentences (numpy.ndarray): An array of encoded chunk tags for each sentence.
+        saved_model_file (str): The file path to save the trained model.
+        epochs (int): The number of training epochs to run.
+
+    Returns:
+        None.
+    """
     # word_index_len = MakingData.Dictionary()
     # komoran_sentences, rule_sentences = MakingData.padding()
     # saved_model_file='data\\Chunk\\model2.h5'

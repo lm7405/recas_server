@@ -13,6 +13,12 @@ sys.path.append(cwdir)
 
 
 def get_dims():
+    """
+    This function loads DIMS dictionary from an Excel file and inserts it into a MongoDB collection.
+
+    Returns:
+        instance of dims class
+    """
     # mongodb를 사용하기 위한 모의 환경 시작
     dic_file = "data\\DimsWordsDict-210919_0.xlsx"
     dims = DIMS.DIMS(mongoHost="localhost", port=27017)
